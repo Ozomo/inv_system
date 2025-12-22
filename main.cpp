@@ -195,9 +195,19 @@ int main(){
             system("cls");
             menu();
             int item_to_add;
-            cout<<"Enter item ID to add: ";
+            cout<<"Enter item ID to add (type 0 for repeating): ";
             cin>>item_to_add;
-            add_item(inventory, item_names,item_to_add);
+            if(item_to_add == 0){
+                item_to_add = -1;
+                while(item_to_add != 0){
+                cin>>item_to_add;
+                add_item(inventory, item_names, item_to_add);
+                }
+                break;
+            } 
+            else if (item_to_add != 0){
+                add_item(inventory, item_names,item_to_add);
+            }
             system("cls");
             menu();
             cout<<"Item ["<<item_to_add<<"] added successfully."<<endl;
