@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 using namespace std;
 
 void clearing_vector(vector <vector<int>>& vec) { //ready
@@ -74,6 +75,7 @@ void remove_item(vector <vector<int>>& inventory, int item) { //ready
 }
 
 void show_items(vector <vector<int>>& inventory) { //ready
+    sort(inventory.begin(), inventory.end());
     cout << "Items in inventory:" << endl;
     for(int i = 0; i < inventory.size(); i++){
         cout << "Item: " << inventory[i][0] << " | Quantity: " << inventory[i][1] << endl;
