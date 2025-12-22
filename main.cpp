@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 using namespace std;
+
 void clearing_vector(vector <vector<int>>& vec) { //ready
     while(vec.size() > 0){
         vec.pop_back();
@@ -117,7 +118,7 @@ void writing(vector <vector<int>>& inventory){ //ready
     }
 }
 
-void menu(){
+void menu(){ //ready
     cout<<"Inventory System"<<endl;
     cout<<"-----------------------------"<<endl;
     cout<<"1. Fast Add Item"<<endl;
@@ -130,6 +131,7 @@ void menu(){
     cout<<"8. Exit"<<endl;
     cout<<"-----------------------------"<<endl;
 }
+
 int main(){
     vector <vector<int>> inventory = {};
 
