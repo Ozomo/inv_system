@@ -2,88 +2,84 @@
 #include <vector>
 #include <fstream>
 using namespace std;
-void clearing_vector(vector<int>& vec) { //ready
+void clearing_vector(vector <vector<int>>& vec) { //ready
     while(vec.size() > 0){
         vec.pop_back();
     }
 }
 
-bool is_there_already(vector<int>& items, int item) { //test
+bool is_there_already(vector <vector<int>>& inventory, int item) { //ready
 
-    for(int i = 0; i< items.size(); i++){
-        if(item == items[i]){
+    for(int i = 0; i< inventory.size(); i++){
+        if(item == inventory[i][0]){
             return true;
         }
     }
     return false;
 }
 
-void add_item(vector<int>& items, vector<int>& quantity, int item) { //ready
-    if(is_there_already(items, item)){
-        for(int i = 0; i < items.size(); i++){
-            if(items[i] == item){
-                quantity[i]++;
+void add_item(vector <vector<int>>& inventory, int item) { //ready
+    if(is_there_already(inventory, item)){
+        for(int i = 0; i < inventory.size(); i++){
+            if(inventory[i][0] == item){
+                inventory[i][1]++;
                 break;
             }
         }
     } else {
-        items.push_back(item);
-        quantity.push_back(1);
+        inventory.push_back({item, 1});
     }
 }
 
-void remove_quantity(vector<int>& items, vector<int>& quantity, int item) { //ready
-    for(int i = 0; i < items.size(); i++){
-        if(items[i] == item){
-            if(quantity[i] > 0){
-                quantity[i]--;
-            }
-            break;
+void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
+    for(int i = 0; i < inventory.size(); i++){
+        if(inventory[i][0] == item && inventory[i][1] > 0){
+            inventory[i][1]--;
+            cout<<"Quantity of item ["<<item<<"] decreased by one."<<endl;
+            return;
         }
-        else {
-            cout<<"There is no such item in inventory."<<endl;
+        else if(inventory[i][0] == item && inventory[i][1] == 0){
+            cout<<"Can't decrease quantity further."<<endl;
+            return;
         }
     }
+    cout<<"There is no such item in inventory."<<endl;
+    return;
 }
 
-void remove_item(vector<int>& items, vector<int>& quantity, int item) { //ready
+void remove_item(vector <vector<int>>& inventory, int item) { //ready
 
-    if(!is_there_already(items, item)){
+    if(!is_there_already(inventory, item)){
         cout<<"There is no such item in inventory."<<endl;
         return;
     }
 
-    vector <int> var_items = {};
-    vector <int> var_quantity = {};
-    for(int i = items.size() - 1; i >= 0; i--){
-        if(items[i] == item){
-            items.pop_back();
-            quantity.pop_back();
-            while(var_items.size() > 0){
-                items.push_back(var_items[var_items.size() - 1]);
-                quantity.push_back(var_quantity[var_quantity.size() - 1]);
-                var_items.pop_back();
-                var_quantity.pop_back();   
+    vector <vector<int>> var_inv = {};
+    for(int i = inventory.size() - 1; i >= 0; i--){
+        if(inventory[i][0] == item){
+            inventory.pop_back();
+            while(var_inv.size() > 0){
+                inventory.push_back(var_inv[var_inv.size() - 1]);
+                var_inv.pop_back();  
             }
+            cout<<"Whole item ["<<item<<"] removed successfully."<<endl;
             return;
         }
         else{
-            var_items.push_back(items[i]);
-            items.pop_back();
-            var_quantity.push_back(quantity[i]);
-            quantity.pop_back();
+            var_inv.push_back(inventory[inventory.size() - 1]);
+            inventory.pop_back();
         }   
     }
 }
 
-void show_items(vector<int>& items, vector<int>& quantity) { //ready
+void show_items(vector <vector<int>>& inventory) { //ready
     cout << "Items in inventory:" << endl;
-    for(int i = 0; i < items.size(); i++){
-        cout << "Item: " << items[i] << " | Quantity: " << quantity[i] << endl;
+    for(int i = 0; i < inventory.size(); i++){
+        cout << "Item: " << inventory[i][0] << " | Quantity: " << inventory[i][1] << endl;
     }
 }
 
-void reading(vector<int>& items, vector<int>& quantity){
+void reading(vector <vector<int>>& inventory){ //ready
     fstream file;
     file.open("inventory.txt", ios::in);
 
@@ -92,13 +88,11 @@ void reading(vector<int>& items, vector<int>& quantity){
         return;
     }
 
-    clearing_vector(items);
-    clearing_vector(quantity);
+    clearing_vector(inventory);
 
     string line;
     int item;
     int qty;
-
     while(true){
         file>>line;
         if(line == ""){
@@ -108,20 +102,21 @@ void reading(vector<int>& items, vector<int>& quantity){
         item = stoi(line);
         file>>line;
         qty = stoi(line);
-        items.push_back(item);
-        quantity.push_back(qty);
+        inventory.push_back({item, qty});
         line = "";
     }
 }
 
-void writing(vector<int>& items, vector<int>& quantity){
+void writing(vector <vector<int>>& inventory){ //ready
     fstream file;
     file.open("inventory.txt", ios::out | ios::trunc);
-    for(int i = 0; i < items.size(); i++){
-        file<<items[i]<<endl;
-        file<<quantity[i]<<endl;
+
+    for(int i = 0; i < inventory.size(); i++){
+        file<<inventory[i][0]<<endl;
+        file<<inventory[i][1]<<endl;
     }
 }
+
 void menu(){
     cout<<"Inventory System"<<endl;
     cout<<"-----------------------------"<<endl;
@@ -136,8 +131,7 @@ void menu(){
     cout<<"-----------------------------"<<endl;
 }
 int main(){
-    vector <int> items = {};
-    vector <int> quantity = {};
+    vector <vector<int>> inventory = {};
 
     menu();
 
@@ -154,7 +148,7 @@ int main(){
             int item_to_add;
             cout<<"Enter item ID to add: ";
             cin>>item_to_add;
-            add_item(items, quantity, item_to_add);
+            add_item(inventory, item_to_add);
             system("cls");
             menu();
             cout<<"Item ["<<item_to_add<<"] added successfully."<<endl;
@@ -167,10 +161,10 @@ int main(){
             int qty;
             cout<<"Enter item ID to add: ";
             cin>>item_to_add;
-            cout<<"enter quantity to add: ";
+            cout<<"Enter quantity to add: ";
             cin>>qty;
             for(int i = 0; i < qty; i++){
-                add_item(items, quantity, item_to_add);
+                add_item(inventory, item_to_add);
             }
             system("cls");
             menu();
@@ -183,10 +177,9 @@ int main(){
             int item_to_remove_qty;
             cout<<"Enter item ID to remove one quantity: ";
             cin>>item_to_remove_qty;
-            remove_quantity(items, quantity, item_to_remove_qty);
             system("cls");
             menu();
-            cout<<"Item ["<<item_to_remove_qty<<"] removed once successfully."<<endl;
+            remove_quantity(inventory, item_to_remove_qty);
             break;
         }
         case 4:{
@@ -195,29 +188,28 @@ int main(){
             int item_to_remove;
             cout<<"Enter item ID to remove whole item: ";
             cin>>item_to_remove;
-            remove_item(items, quantity, item_to_remove);
             system("cls");
             menu();
-            cout<<"Whole item ["<<item_to_remove<<"] removed successfully."<<endl;
+            remove_item(inventory, item_to_remove);
             break;
         }
         case 5:{
             system("cls");
             menu();
-            show_items(items, quantity);
+            show_items(inventory);
             break;
         }
         case 6:{
             system("cls");
             menu();
-            writing(items, quantity);
+            writing(inventory);
             cout<<"Inventory saved to file."<<endl;
             break;
         }
         case 7:{
             system("cls");
             menu();
-            reading(items, quantity);
+            reading(inventory);
             cout<<"Inventory loaded from file."<<endl;
             break;
         }
