@@ -5,8 +5,7 @@
 #include <string>
 using namespace std;
 
-void sort(vector <vector<int>>& inventory, vector <string>& item_names) {
-    // Simple bubble sort to keep item_names in sync with inventory
+void sort(vector <vector<int>>& inventory, vector <string>& item_names) { //ready
     for (int i = 0; i < inventory.size(); i++) {
         for (int j = 0; j < inventory.size() - i - 1; j++) {
             if (inventory[j][0] > inventory[j + 1][0]) {
@@ -30,7 +29,6 @@ void clearing_vector_string(vector <string>& vec) { //ready
 }
 
 bool is_there_already(vector <vector<int>>& inventory, int item) { //ready
-
     for(int i = 0; i< inventory.size(); i++){
         if(item == inventory[i][0]){
             return true;
@@ -53,7 +51,7 @@ void add_item(vector <vector<int>>& inventory, vector <string>& item_names, int 
     }
 }
 
-void add_name(vector <vector<int>>& inventory, vector <string>& item_names, int item, string name) {
+void add_name(vector <vector<int>>& inventory, vector <string>& item_names, int item, string name) { //ready
     if(!is_there_already(inventory, item)){ //check if item exists
         cout<<"Item does not exist in inventory."<<endl;
         return;
@@ -63,8 +61,7 @@ void add_name(vector <vector<int>>& inventory, vector <string>& item_names, int 
         if(inventory[i][0] == item){
             if(i < item_names.size()){
                 item_names[i] = name;
-            } 
-            else {
+            } else {
                 item_names.push_back(name);
             }
             cout<<"Name ["<<name<<"] assigned to item ["<<item<<"]."<<endl;
@@ -79,8 +76,7 @@ void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
             inventory[i][1]--;
             cout<<"Quantity of item ["<<item<<"] decreased by one."<<endl;
             return;
-        }
-        else if(inventory[i][0] == item && inventory[i][1] == 0){
+        } else if (inventory[i][0] == item && inventory[i][1] == 0){
             cout<<"Can't decrease quantity further."<<endl;
             return;
         }
@@ -90,13 +86,13 @@ void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
 }
 
 void remove_item(vector <vector<int>>& inventory, int item) { //ready
-
     if(!is_there_already(inventory, item)){
         cout<<"There is no such item in inventory."<<endl;
         return;
     }
 
     vector <vector<int>> var_inv = {};
+
     for(int i = inventory.size() - 1; i >= 0; i--){
         if(inventory[i][0] == item){
             inventory.pop_back();
@@ -106,8 +102,7 @@ void remove_item(vector <vector<int>>& inventory, int item) { //ready
             }
             cout<<"Whole item ["<<item<<"] removed successfully."<<endl;
             return;
-        }
-        else{
+        } else {
             var_inv.push_back(inventory[inventory.size() - 1]);
             inventory.pop_back();
         }   
@@ -161,6 +156,7 @@ void writing(vector <vector<int>>& inventory, vector <string> item_names){ //rea
         file<<item_names[i]<<endl;
         file<<inventory[i][1]<<endl;
     }
+    file.close();
 }
 
 void menu(){ //ready
