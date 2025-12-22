@@ -195,7 +195,7 @@ int main(){
             system("cls");
             menu();
             int item_to_add;
-            cout<<"Enter item ID to add (type 0 for repeating): ";
+            cout<<"Enter item ID to add (type 0 for repeating, then 0 to stop): ";
             cin>>item_to_add;
             if(item_to_add == 0){
                 item_to_add = -1;
