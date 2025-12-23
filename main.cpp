@@ -70,6 +70,7 @@ void add_name(vector <vector<int>>& inventory, vector <string>& item_names, int 
     }
 
 }
+
 void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
     for(int i = 0; i < inventory.size(); i++){
         if(inventory[i][0] == item && inventory[i][1] > 0){
@@ -85,26 +86,31 @@ void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
     return;
 }
 
-void remove_item(vector <vector<int>>& inventory, int item) { //ready
+void remove_item(vector <vector<int>>& inventory, vector <string>& item_names ,int item) { //ready
     if(!is_there_already(inventory, item)){
         cout<<"There is no such item in inventory."<<endl;
         return;
     }
 
     vector <vector<int>> var_inv = {};
-
+    vector <string> var_names = {};
     for(int i = inventory.size() - 1; i >= 0; i--){
         if(inventory[i][0] == item){
             inventory.pop_back();
+            item_names.pop_back();
             while(var_inv.size() > 0){
                 inventory.push_back(var_inv[var_inv.size() - 1]);
+                item_names.push_back(var_names[var_names.size() - 1]);
                 var_inv.pop_back();  
+                var_names.pop_back();
             }
             cout<<"Whole item ["<<item<<"] removed successfully."<<endl;
             return;
         } else {
             var_inv.push_back(inventory[inventory.size() - 1]);
+            var_names.push_back(item_names[item_names.size() - 1]);
             inventory.pop_back();
+            item_names.pop_back();
         }   
     }
 }
@@ -122,12 +128,12 @@ void reading(vector <vector<int>>& inventory, vector <string>& item_names){ //re
     file.open("inventory.txt", ios::in);
 
     if(file.fail()){
-        cout<<"File could not be opened."<<endl;
         return;
     }
 
     clearing_vector_int(inventory);
     clearing_vector_string(item_names);
+
     string line;
     int item;
     int qty;
@@ -168,9 +174,7 @@ void menu(){ //ready
     cout<<"4. Remove Quantity"<<endl;
     cout<<"5. Remove Item"<<endl;
     cout<<"6. Show Items"<<endl;
-    cout<<"7. Save Inventory to File"<<endl;
-    cout<<"8. Load Inventory from File"<<endl;
-    cout<<"9. Exit"<<endl;
+    cout<<"7. Exit"<<endl;
     cout<<"-----------------------------"<<endl;
 }
 
@@ -179,7 +183,7 @@ int main(){
     vector <string> item_names = {};
 
     menu();
-
+    reading(inventory, item_names);
     again:
     cout<<"Enter your choice: ";
 
@@ -207,6 +211,7 @@ int main(){
             system("cls");
             menu();
             cout<<"Item ["<<item_to_add<<"] added successfully."<<endl;
+            writing(inventory, item_names);
             break;
         }
         case 2:{
@@ -224,6 +229,7 @@ int main(){
             system("cls");
             menu();
             cout<<"Item ["<<item_to_add<<"] added "<<qty<<" times successfully."<<endl;
+            writing(inventory, item_names);
             break;
         }
         case 3:{
@@ -239,6 +245,7 @@ int main(){
             system("cls");
             menu();
             add_name(inventory, item_names, item, name);
+            writing(inventory, item_names);
             break;
         }
         case 4:{
@@ -250,6 +257,7 @@ int main(){
             system("cls");
             menu();
             remove_quantity(inventory, item_to_remove_qty);
+            writing(inventory, item_names);
             break;
         }
         case 5:{
@@ -260,7 +268,8 @@ int main(){
             cin>>item_to_remove;
             system("cls");
             menu();
-            remove_item(inventory, item_to_remove);
+            remove_item(inventory, item_names ,item_to_remove);
+            writing(inventory, item_names);
             break;
         }
         case 6:{
@@ -270,20 +279,6 @@ int main(){
             break;
         }
         case 7:{
-            system("cls");
-            menu();
-            writing(inventory, item_names);
-            cout<<"Inventory saved to file."<<endl;
-            break;
-        }
-        case 8:{
-            system("cls");
-            menu();
-            reading(inventory, item_names);
-            cout<<"Inventory loaded from file."<<endl;
-            break;
-        }
-        case 9:{
             return 0;
             break;
         }
