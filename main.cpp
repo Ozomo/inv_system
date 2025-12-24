@@ -3,7 +3,17 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <filesystem>
 using namespace std;
+
+void file_exists_check(string filename) { //ready
+    ifstream file(filename+".txt");
+    if (!file) {
+        ofstream create_file(filename+".txt");
+        create_file.close();
+    }
+    file.close();
+}
 
 void sort(vector <vector<int>>& inventory, vector <string>& item_names) { //ready
     for (int i = 0; i < inventory.size(); i++) {
@@ -165,6 +175,39 @@ void writing(vector <vector<int>>& inventory, vector <string> item_names){ //rea
     file.close();
 }
 
+void update_names(vector <vector<int>>& inventory, vector <string>& item_names){ //ready
+
+    fstream file;
+    file.open("config\\id_name_data.txt", ios::in);
+    if(file.fail()){
+            cout<<"No names data file found. Skipping name update."<<endl;
+    }
+
+    string line;
+    int item;
+
+    while(true){
+        file>>line;
+        if(line == ""){
+            file.close();
+            return;
+        }
+        item = stoi(line);
+        for(int i = 0; i < inventory.size(); i++){
+            if(inventory[i][0] == item){
+                file>>line;
+                item_names[i] = line;
+                line = "";
+                break;
+            }
+            if(i == inventory.size() - 1){
+                file>>line;
+                line = "";
+            }
+        }
+    }
+}
+
 void menu(){ //ready
     cout<<"Inventory System"<<endl;
     cout<<"-----------------------------"<<endl;
@@ -183,7 +226,16 @@ int main(){
     vector <string> item_names = {};
 
     menu();
-    reading(inventory, item_names);
+    
+    system("mkdir config 2> nul"); //create config folder
+    
+    file_exists_check("config\\id_name_data"); //create config file if not exists
+    file_exists_check("inventory"); //create inventory file if not exists
+    
+    reading(inventory, item_names); //read existing inventory from file
+
+    update_names(inventory, item_names); //update names from config file
+
     again:
     cout<<"Enter your choice: ";
 
