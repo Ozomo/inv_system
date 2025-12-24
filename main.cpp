@@ -227,7 +227,6 @@ int main(){
     vector <string> item_names = {};
     int is_Successful = 0;
 
-    menu();
     
     system("mkdir config 2> nul"); //create config folder
     
@@ -239,6 +238,7 @@ int main(){
         update_names(inventory, item_names); //update names from config file
     }
     
+    menu();
     again:
     cout<<"Enter your choice: ";
 
@@ -351,7 +351,6 @@ int main(){
             return 0;
             break;
         }
-        
         default:{
             system("cls");
             menu();
