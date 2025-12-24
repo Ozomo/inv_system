@@ -96,9 +96,9 @@ void remove_quantity(vector <vector<int>>& inventory, int item) { //ready
     return;
 }
 
-void remove_item(vector <vector<int>>& inventory, vector <string>& item_names ,int item) { //ready
+void remove_item(vector <vector<int>>& inventory, vector <string>& item_names ,int item, int& is_Successful) { //ready
     if(!is_there_already(inventory, item)){
-        cout<<"There is no such item in inventory."<<endl;
+        is_Successful = -1;
         return;
     }
 
@@ -167,6 +167,9 @@ void writing(vector <vector<int>>& inventory, vector <string> item_names){ //rea
     fstream file;
     file.open("inventory.txt", ios::out | ios::trunc);
 
+    if(file.fail()){
+        return;
+    }
     for(int i = 0; i < inventory.size(); i++){
         file<<inventory[i][0]<<endl;
         file<<item_names[i]<<endl;
@@ -179,9 +182,6 @@ void update_names(vector <vector<int>>& inventory, vector <string>& item_names){
 
     fstream file;
     file.open("config\\id_name_data.txt", ios::in);
-    if(file.fail()){
-            cout<<"No names data file found. Skipping name update."<<endl;
-    }
 
     string line;
     int item;
@@ -199,7 +199,7 @@ void update_names(vector <vector<int>>& inventory, vector <string>& item_names){
                 item_names[i] = line;
                 line = "";
                 break;
-            }
+            } 
             if(i == inventory.size() - 1){
                 file>>line;
                 line = "";
@@ -217,13 +217,15 @@ void menu(){ //ready
     cout<<"4. Remove Quantity"<<endl;
     cout<<"5. Remove Item"<<endl;
     cout<<"6. Show Items"<<endl;
-    cout<<"7. Exit"<<endl;
+    cout<<"7. Update names from config file"<<endl;
+    cout<<"8. Exit"<<endl;
     cout<<"-----------------------------"<<endl;
 }
 
 int main(){
     vector <vector<int>> inventory = {};
     vector <string> item_names = {};
+    int is_Successful = 0;
 
     menu();
     
@@ -233,9 +235,10 @@ int main(){
     file_exists_check("inventory"); //create inventory file if not exists
     
     reading(inventory, item_names); //read existing inventory from file
-
-    update_names(inventory, item_names); //update names from config file
-
+    if(item_names.size() != 0){
+        update_names(inventory, item_names); //update names from config file
+    }
+    
     again:
     cout<<"Enter your choice: ";
 
@@ -320,7 +323,13 @@ int main(){
             cin>>item_to_remove;
             system("cls");
             menu();
-            remove_item(inventory, item_names ,item_to_remove);
+            remove_item(inventory, item_names ,item_to_remove, is_Successful);
+
+            if(is_Successful == -1){
+                cout<<"There is no such item in inventory."<<endl;
+                is_Successful = 0;
+            }
+
             writing(inventory, item_names);
             break;
         }
@@ -331,9 +340,18 @@ int main(){
             break;
         }
         case 7:{
+            system("cls");
+            menu();
+            update_names(inventory, item_names);
+            cout<<"Names updated from config file successfully."<<endl;
+            writing(inventory, item_names);
+            break;
+        }
+        case 8:{
             return 0;
             break;
         }
+        
         default:{
             system("cls");
             menu();
