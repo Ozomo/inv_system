@@ -226,7 +226,6 @@ int main(){
     vector <vector<int>> inventory = {};
     vector <string> item_names = {};
     int is_Successful = 0;
-
     
     system("mkdir config 2> nul"); //create config folder
     
